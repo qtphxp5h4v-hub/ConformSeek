@@ -25,10 +25,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-14          # Apple Silicon runner (M1)
+          - os: macos-14            # Apple Silicon runner (M1)
             artifact: python-macos-arm64
             binary: conformseek_api
-          - os: macos-13          # Intel runner
+          - os: macos-15-intel      # Intel runner (replaces retired macos-13)
             artifact: python-macos-x64
             binary: conformseek_api
           - os: windows-latest
@@ -55,17 +55,12 @@ jobs:
           pip install fastapi uvicorn propka biopython numpy requests zeep lxml
 
       - name: Compile with PyInstaller
-        run: |
-          pyinstaller --onefile --name conformseek_api \
-            --collect-all propka \
-            --collect-all Bio \
-            --collect-all zeep \
-            --collect-all lxml \
-            conformseek_server.py
+        shell: bash
+        run: pyinstaller --onefile --name conformseek_api --collect-all propka --collect-all Bio --collect-all zeep --collect-all lxml conformseek_server.py
 
       - name: Verify binary exists
-        run: ls -la dist/
         shell: bash
+        run: ls -la dist/
 
       - name: Upload Python binary
         uses: actions/upload-artifact@v4
@@ -87,26 +82,18 @@ jobs:
           - os: macos-14
             python_artifact: python-macos-arm64
             electron_args: --mac --arm64
-            output_pattern: |
-              dist/*.dmg
           # macOS Intel (.dmg)
-          - os: macos-13
+          - os: macos-15-intel
             python_artifact: python-macos-x64
             electron_args: --mac --x64
-            output_pattern: |
-              dist/*.dmg
           # Windows x64 (.exe installer)
           - os: windows-latest
             python_artifact: python-windows-x64
             electron_args: --win --x64
-            output_pattern: |
-              dist/*.exe
           # Linux x64 (.AppImage)
           - os: ubuntu-latest
             python_artifact: python-linux-x64
             electron_args: --linux --x64
-            output_pattern: |
-              dist/*.AppImage
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -133,22 +120,23 @@ jobs:
         run: chmod +x python-dist/conformseek_api
 
       - name: Verify python-dist contents
-        run: ls -la python-dist/
         shell: bash
+        run: ls -la python-dist/
 
       - name: Build React app
         run: npm run build
         env:
-          CI: false  # Don't treat warnings as errors
+          CI: false
 
       - name: Build Electron app
+        shell: bash
         run: npx electron-builder ${{ matrix.electron_args }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List build output
-        run: ls -la dist/
         shell: bash
+        run: ls -la dist/
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
