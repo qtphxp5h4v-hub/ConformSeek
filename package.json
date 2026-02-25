@@ -49,11 +49,10 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["arm64"]
+          "arch": ["arm64", "x64"]
         }
       ],
       "category": "public.app-category.education",
-      "icon": "assets/icon.icns",
       "darkModeSupport": true,
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",
@@ -72,14 +71,11 @@
           "target": "nsis",
           "arch": ["x64"]
         }
-      ],
-      "icon": "assets/icon.ico"
+      ]
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico"
+      "allowToChangeInstallationDirectory": true
     },
     "linux": {
       "target": ["AppImage"],
