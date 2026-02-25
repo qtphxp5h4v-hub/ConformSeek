@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Allow spawning the Python backend child process -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <!-- Allow network client connections (RCSB, UniProt, BRENDA SOAP API) -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <!-- Allow network server (Python backend on localhost) -->
+    <key>com.apple.security.network.server</key>
+    <true/>
+    <!-- Allow reading/writing user files (credential storage, cache) -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+</dict>
+</plist>
